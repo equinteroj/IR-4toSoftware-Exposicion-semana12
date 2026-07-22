@@ -1,0 +1,190 @@
+\documentclass[11pt,a4paper]{article}
+
+% ==================== PAQUETES ====================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
+\sloppy
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{setspace}
+\onehalfspacing
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\appendixname}{Anexo}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabla}
+
+% ==================== COLORES INSTITUCIONALES ====================
+\definecolor{uteqverde}{RGB}{0,90,60}
+\definecolor{uteqverdeclaro}{RGB}{225,240,232}
+\definecolor{grisplaceholder}{RGB}{110,110,110}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    pdftitle={AquaGest -- Ciclo MDD UML a Código},
+    pdfauthor={Equipo AHMRV -- UTEQ}
+}
+
+% ==================== ENCABEZADOS ====================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Ingeniería de Requisitos (ISR-401) -- UTEQ}
+\fancyhead[R]{\small AquaGest -- Ciclo MDD (UML \(\rightarrow\) Código)}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\section}{\Large\bfseries\color{uteqverde}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{uteqverde}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{uteqverde}}{\thesubsubsection}{1em}{}
+
+% ==================== ENTORNO PARA EVIDENCIAS PENDIENTES ====================
+\newtcolorbox{evidencia}[1]{
+    breakable,
+    colback=uteqverdeclaro,
+    colframe=uteqverde,
+    boxrule=0.6pt,
+    arc=2mm,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    title={\small\textbf{Evidencia pendiente -- #1}},
+    fonttitle=\color{white}\small\bfseries,
+    colbacktitle=uteqverde,
+    coltext=black
+}
+
+\newcommand{\placeholder}[1]{%
+    \begin{evidencia}{Espacio reservado}
+    \small\color{grisplaceholder}\itshape Aqui va una imagen: #1
+    \end{evidencia}
+}
+
+% ==================== DATOS DEL DOCUMENTO ====================
+\newcommand{\tituloPFC}{AquaGest -- Sistema para la Gestión Inteligente de una Camaronera}
+\newcommand{\asignatura}{Ingeniería de Requisitos (ISR-401)}
+\newcommand{\docenteNombre}{Ing. Gleiston Guerrero Ulloa, PhD.}
+\newcommand{\periodoAcademico}{2026--2027 PPA}
+\newcommand{\paraleloCurso}{4to ``A'' Software}
+\newcommand{\repoURL}{https://github.com/EdhuXav/Proyecto\_IR\_Camaronera\_CCGaPQ}
+
+\begin{document}
+
+% ==================== CARÁTULA ====================
+\begin{titlepage}
+ \centering
+
+    \textbf{\large UNIVERSIDAD TÉCNICA ESTATAL DE QUEVEDO}\\[0.5cm]
+
+    \includegraphics[width=4cm]{logo.png}\\[0.5cm]
+
+    \textbf{INGENIERÍA DE REQUERIMIENTOS}\\[0.5cm]
+
+
+    \textbf{TEMA:}\\[0.3cm]
+
+   EXPOSICIÓN SEGUNDO CORTE: HERRAMIENTAS CASE (SOFTWARE IDEAS MODELER)\\[0.5cm]
+
+
+    \textbf{INTEGRANTES:}\\[0.5cm]
+    ALCIVAR VELEZ ANDERSON ADONIS\\[0.3cm]
+    BARRIONUEVO FUENTES CARLOS DANIEL\\[0.3cm]
+    QUINTERO GENDE ERICK JAHIR\\[0.3cm]
+    TRUJILLO VEGA MAYUMMY JAILLY\\[0.3cm]
+
+    \textbf{ASIGNATURA:}\\[0.3cm]
+
+    INGENIERÍA DE REQUERIMIENTOS\\[0.3cm]
+
+    \textbf{CURSO:}\\[0.3cm]
+
+    4TO “A” SOFTWARE\\[0.3cm]
+
+    \textbf{FECHA:}\\[0.3cm]
+
+    21/06/2026\\[0.5cm]
+
+    \textbf{DOCENTE:}\\[0.3cm]
+
+    ING. GUERRERO ULLOA GLEISTON CICERON
+
+    \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ==================== RESUMEN ====================
+\section*{Resumen}
+\addcontentsline{toc}{section}{Resumen}
+
+El presente documento describe la aplicación del ciclo completo de Ingeniería Dirigida por Modelos (\emph{Model-Driven Development}, MDD) sobre un subsistema representativo del Proyecto Fin de Curso \tituloPFC, desarrollado para la Compañía Biofina (Camaronera El Guasmo). Como herramienta MDD se seleccionó \textbf{Software Ideas Modeler}, desarrollada por Dušan Rodina, por su soporte nativo de plantillas de generación de código predefinidas y personalizables (\emph{Code Generation Templates}) orientadas a transformaciones modelo-a-texto (M2T), coherentes con el enfoque MDA del OMG. El subsistema modelado corresponde al módulo de \textbf{Control de Siembras y Monitoreo del Agua}, núcleo del ciclo productivo de AquaGest. Se construyó el diagrama de clases de origen con los estereotipos necesarios para la generación estructural en Java, se configuró el generador de Software Ideas Modeler y se ejecutó la generación de código, verificándose su compilación y una unidad demostrable mínima. Finalmente, se documentó un ciclo de \emph{roundtrip} controlado (modelo \(\rightarrow\) código \(\rightarrow\) modelo) sobre un cambio no trivial. El resultado esperado evidencia el valor del enfoque MDD para acelerar y trazar la construcción del backend de AquaGest a partir de su especificación de requisitos ya formalizada.
+
+\newpage
+
+% ==================== 1. MARCO TEÓRICO ====================
+\section{Marco teórico}
+\label{sec:marco-teorico}
+
+El desarrollo de software puede abordarse desde un paradigma en el que el modelo deja de ser un artefacto meramente documental y pasa a convertirse en la fuente autoritativa del sistema. Este enfoque, denominado \emph{Model-Driven Engineering} (MDE), sostiene que los modelos son artefactos de primera clase del proceso de desarrollo y que las implementaciones concretas del software deben derivarse de ellos mediante transformaciones automatizadas, en lugar de ser escritas manualmente desde cero \citep{bucchiarone2020}. Bajo esta filosofía, el código fuente pierde su carácter de único artefacto autoritativo y se convierte en un producto derivado, regenerable y trazable hacia su origen conceptual.
+
+Dentro de MDE, el Object Management Group (OMG) formalizó la iniciativa \emph{Model-Driven Architecture} (MDA), que estructura el desarrollo en tres niveles de abstracción sucesivos: el \textbf{CIM} (\emph{Computation Independent Model}), que describe el dominio y el negocio sin referencia alguna a decisiones de software; el \textbf{PIM} (\emph{Platform Independent Model}), que expresa la lógica y estructura del sistema con independencia de la plataforma tecnológica de despliegue; y el \textbf{PSM} (\emph{Platform Specific Model}), que vincula ese mismo diseño a una plataforma concreta (lenguaje, framework, motor de persistencia) \citep{omg_mda2014}. Entre estos niveles median transformaciones formales, y es precisamente esta cadena de transformaciones la que MDA estandariza como método repetible de ingeniería.
+
+La aplicación práctica de MDE al ciclo de vida completo del software recibe el nombre de \emph{Model-Driven Development} (MDD): los modelos guían la construcción del sistema y el código fuente se obtiene, total o parcialmente, mediante generadores automáticos que interpretan dichos modelos conforme a reglas de mapeo previamente definidas. En MDD conviven dos tipos de transformación complementarios. Las transformaciones \textbf{modelo-a-modelo (M2M)} producen un modelo destino a partir de uno de origen —típicamente, la transición de un PIM a un PSM— y su estándar de referencia en el ecosistema OMG es \emph{Query/View/Transformation} (QVT) \citep{omg_qvt2016}. Las transformaciones \textbf{modelo-a-texto (M2T)}, en cambio, producen artefactos textuales —código fuente, configuraciones, documentación— directamente a partir de un modelo, y su estándar de referencia es \emph{MOF Model to Text} (MOFM2T) \citep{omg_mofm2t2008}, y es precisamente ese estándar el que herramientas como \textbf{Software Ideas Modeler} implementan mediante un motor de plantillas de generación predefinidas y personalizables (\emph{Code Generation Templates}) para distintos lenguajes objetivo, permitiendo a un equipo de desarrollo especificar, para cada tipo de elemento del modelo, la regla de mapeo textual que produce el código fuente destino.
+
+Software Ideas Modeler materializa este mecanismo mediante un motor de generación configurable por lenguaje objetivo (Java, C\#, C++, Python, PHP, TypeScript, entre otros), que interpreta el árbol de clases del modelo UML y aplica, para cada elemento, la plantilla correspondiente al tipo de artefacto que se desea producir: clases de dominio, interfaces, enumeraciones o esqueletos de servicio. El asistente de generación de la herramienta organiza esta configuración en pestañas diferenciadas —opciones generales, importaciones y opciones específicas de la plantilla—, lo que permite al equipo decidir, entre otras cosas, si el código se organiza en subcarpetas por paquete o si el código de cada diagrama se agrupa en un único archivo. A diferencia de un generador de propósito general, el motor de Software Ideas Modeler reconoce de forma nativa los estereotipos UML aplicados sobre las clases y sus atributos, así como los conjuntos de tipos (\emph{type sets}) específicos de cada lenguaje objetivo, lo que permite que un mismo modelo de dominio —como el de AquaGest— derive en artefactos de código coherentes con el lenguaje de destino, sin que el analista deba reescribir manualmente la estructura ya validada en el modelo.
+
+Tanto las transformaciones M2M como M2T operan sobre la base de un \textbf{metamodelo}, es decir, un modelo que define la sintaxis abstracta del lenguaje de modelado utilizado. UML se define formalmente sobre el \emph{Meta Object Facility} (MOF) del OMG \citep{omg_uml2017}, y es precisamente esa definición metamodélica —clases, atributos, asociaciones, generalizaciones y estereotipos— la que un generador de código explota para producir artefactos consistentes. Cuando el vocabulario nativo de UML resulta insuficiente para expresar decisiones específicas de una plataforma o dominio, se recurre a \textbf{perfiles UML}: mecanismos estándar de extensión del metamodelo mediante estereotipos, valores etiquetados y restricciones (por ejemplo, un perfil \texttt{Entity} o \texttt{Service} que indique a Software Ideas Modeler cómo mapear una clase del dominio a una entidad persistente o a un componente de servicio en el código generado).
+
+Finalmente, es necesario distinguir tres direcciones posibles del flujo modelo-código. La \textbf{generación hacia adelante} (\emph{forward engineering}) parte del modelo para producir el código. La \textbf{ingeniería inversa} (\emph{reverse engineering}) realiza el camino opuesto: recupera un modelo a partir de código ya existente. El \textbf{roundtrip} combina ambas direcciones de forma sincronizada, de modo que un cambio introducido en el modelo se refleje en el código regenerado, y —cuando la herramienta lo soporta— un cambio realizado directamente en zonas protegidas del código no se pierda ante una nueva generación. Este documento cubre de forma obligatoria la generación hacia adelante y evidencia, de forma controlada, un ciclo de roundtrip sobre el subsistema modelado de AquaGest.
+
+El campo de las transformaciones de modelos continúa siendo un área activa de investigación: persisten retos abiertos en escalabilidad, interoperabilidad entre herramientas y adopción industrial del enfoque MDD \citep{bucchiarone2020}, particularmente en dominios con fuerte componente de dispositivos conectados —como el de AquaGest, que integra sensores IoT de calidad de agua—, donde trabajos recientes han demostrado la viabilidad de generar de forma dirigida por modelos tanto el backend de gestión como los artefactos de despliegue de aplicaciones IoT confiables \citep{kirchhof2022}. En el ámbito específico de la generación industrial de código a partir de reglas y plantillas, estudios de caso a gran escala confirman que los enfoques basados en plantillas —como el empleado por Software Ideas Modeler— siguen siendo una alternativa robusta y mantenible frente a la escritura manual repetitiva de código de infraestructura \citep{koziolek2020}. Estos antecedentes sustentan la pertinencia de aplicar MDD al subsistema crítico de AquaGest antes de emprender su implementación completa.
+
+Un aspecto adicional relevante para un proyecto como AquaGest, que parte de una especificación de requisitos ya formalizada según ISO/IEC/IEEE 29148:2018 \citep{iso29148}, es que el enfoque MDD no reemplaza a la Ingeniería de Requisitos sino que la extiende: los requisitos funcionales verificables (con criterio de verificación cuantificado) constituyen precisamente el insumo que permite decidir, con criterio objetivo, qué clases del modelo de dominio ameritan generación automática y cuáles requieren lógica de negocio adicional escrita a mano. La calidad del modelo de origen —su completitud, su tipado y la corrección de sus multiplicidades— condiciona directamente la calidad del código derivado; un modelo ambiguo o incompleto produce, inevitablemente, código ambiguo o incompleto, independientemente de cuán sofisticado sea el generador empleado. Esta relación de dependencia es la que justifica que, antes de iniciar la Fase 3 de modelado (Sección \ref{sec:modelo-uml}), el equipo se apoye directamente en el diagrama de clases conceptual ya validado del proyecto AquaGest, en lugar de construir un modelo de dominio nuevo y desconectado de los requisitos previamente elicitados.
+
+% ==================== 2. JUSTIFICACIÓN DE LA HERRAMIENTA ====================
+\section{Justificación de la selección de la herramienta MDD}
+\label{sec:justificacion-herramienta}
+
+El Documento de Especificación de Requisitos de Software (ERS) del proyecto AquaGest establece restricciones tecnológicas explícitas que condicionan directamente la selección de la herramienta MDD: arquitectura cliente-servidor con API REST (RST-05), base de datos relacional PostgreSQL o MySQL sin motores NoSQL como almacenamiento principal (RST-01), autenticación y control de acceso basado en roles (RST-03), y priorización de frameworks y bibliotecas de código abierto por restricción presupuestaria (RST-04). A ello se suma que el backend de AquaGest deberá exponer una API REST consumida tanto por el frontend web como por el módulo de IA desacoplado (RST-05), lo que orienta la selección hacia un lenguaje de propósito general con amplio soporte de frameworks REST y ORM maduros.
+
+Se seleccionó \textbf{Software Ideas Modeler} como herramienta MDD para el proyecto AquaGest por las siguientes razones, cada una vinculada a una restricción concreta del PFC:
+
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Generación de código Java a partir de plantillas predefinidas.} Software Ideas Modeler incluye plantillas de generación (\emph{Code Generation Templates}) orientadas a Java, con soporte de estereotipos que pueden asociarse a un perfil equivalente a JPA/Hibernate para persistencia relacional, coherente con la restricción RST-01 (PostgreSQL/MySQL) y con el requisito de exponer una API REST (RST-05).
+    \item \textbf{Motor de plantillas personalizable orientado a M2T.} El asistente de generación de código de Software Ideas Modeler permite ajustar, mediante sus pestañas de opciones generales, importaciones y opciones de plantilla, la forma en que el código se organiza y agrupa por paquete, lo que permite mantener el modelo de dominio (Sección \ref{sec:subsistema}) como fuente autoritativa hasta el momento de la generación.
+    \item \textbf{Curva de aprendizaje adecuada al cronograma académico.} La interfaz gráfica de Software Ideas Modeler y su documentación oficial permiten a un equipo de cuarto semestre construir el modelo, aplicar estereotipos y ejecutar la generación dentro de las 8--10 horas estimadas por la guía de la asignatura (Fases 3 a 6).
+    \item \textbf{Trazabilidad nativa con el modelo de clases del ERS.} El diagrama de clases conceptual ya construido en la Sección 4.3 del ERS de AquaGest (14 clases, relaciones con multiplicidad) constituye una base directa para el modelo UML de origen requerido por esta actividad, evitando reelaborar el análisis de dominio desde cero.
+    \item \textbf{Disponibilidad sin costo para uso académico.} La Edición Estándar de Software Ideas Modeler puede emplearse de forma gratuita en proyectos no comerciales y educativos, lo que la hace directamente compatible con la restricción presupuestaria del PFC (RST-04, priorización de herramientas de bajo costo).
+\end{itemize}
+
+En conjunto, estas características hacen de Software Ideas Modeler una herramienta adecuada para acompañar el ciclo de vida completo del proyecto AquaGest: desde el modelo conceptual ya validado en la especificación de requisitos hasta la generación, verificación y evolución controlada del código fuente del backend, sin exigir al equipo una migración de entorno de modelado ni la adopción de un lenguaje de transformación adicional al propio motor de plantillas de la herramienta.
+
+\subsection{Licenciamiento y disponibilidad para el equipo}
+
+Software Ideas Modeler, desarrollada por Dušan Rodina, se distribuye en varias ediciones: una Edición Estándar de uso gratuito para proyectos no comerciales y educativos (como el presente PFC académico), y las ediciones Professional y Ultimate, de licencia comercial, que habilitan funciones adicionales de colaboración y generación avanzada. La herramienta también ofrece un período de evaluación de 30 días para las ediciones de pago. Para efectos de esta actividad, el equipo utiliza la Edición Estándar instalada en los equipos personales de los integrantes, documentando en todo caso la versión exacta empleada como parte de la evidencia técnica del proyecto.
+
+
+% ==================== REFERENCIAS ====================
+\newpage
+\bibliographystyle{ieeetr}
+\bibliography{referencias}
+\addcontentsline{toc}{section}{Referencias}
+
+% ==================== ANEXO ====================
+
+
+\end{document}
