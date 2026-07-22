@@ -177,6 +177,58 @@ En conjunto, estas características hacen de Software Ideas Modeler una herramie
 
 Software Ideas Modeler, desarrollada por Dušan Rodina, se distribuye en varias ediciones: una Edición Estándar de uso gratuito para proyectos no comerciales y educativos (como el presente PFC académico), y las ediciones Professional y Ultimate, de licencia comercial, que habilitan funciones adicionales de colaboración y generación avanzada. La herramienta también ofrece un período de evaluación de 30 días para las ediciones de pago. Para efectos de esta actividad, el equipo utiliza la Edición Estándar instalada en los equipos personales de los integrantes, documentando en todo caso la versión exacta empleada como parte de la evidencia técnica del proyecto.
 
+% ==================== 3. DESCRIPCIÓN DEL SUBSISTEMA ====================
+\section{Descripción del subsistema del PFC modelado}
+\label{sec:subsistema}
+
+\subsection{Contexto y alcance del módulo seleccionado}
+
+De los diez módulos funcionales identificados en el ERS de AquaGest (Gestión de Estanques, Control de Siembras, Monitoreo del Agua, Alimentación, Historial Sanitario, Gestión de Empleados, Inventario, Mantenimiento, Cosechas, Reportes e Inteligencia Artificial), se seleccionó como subsistema representativo el módulo integrado de \textbf{Control de Siembras y Monitoreo del Agua}, por ser el núcleo operativo del ciclo productivo: sin un registro correcto de la siembra y sin monitoreo continuo de los parámetros del agua, ningún otro módulo (alimentación, sanidad, cosecha) puede operar con datos válidos.
+
+\subsection{Actores y requisitos funcionales cubiertos}
+
+El subsistema modelado cubre directamente los requisitos funcionales \textbf{RF-01, RF-02, RF-04, RF-05, RF-06, RF-09} y \textbf{RF-10} del ERS de AquaGest, correspondientes al registro de estanques, cálculo de capacidad máxima de siembra, actualización de estado del estanque, registro de siembra, registro de grameo semanal, registro de parámetros del agua y generación de alertas por parámetro fuera de rango, respectivamente. Los actores principales son el \textbf{Operario de Producción} (registra siembras y alimentación), el \textbf{Técnico Acuícola} (registra grameos y parámetros del agua) y, como actor externo automatizado, el \textbf{Sensor IoT}, que envía lecturas de forma periódica según la interfaz de software JSON sobre MQTT/HTTP REST definida en la Sección 3.1.3 del ERS.
+
+\subsection{Clases del dominio incluidas en el modelo de origen}
+
+El modelo UML de origen (Sección \ref{sec:modelo-uml}) incorpora las siguientes seis clases mínimas del dominio, extraídas y refinadas del diagrama de clases conceptual del proyecto AquaGest: \texttt{Estanque}, \texttt{Siembra}, \texttt{Grameo}, \texttt{ParametroAgua}, \texttt{AlertaAgua} y \texttt{Empleado} (como responsable de siembra y de atención de alertas). Estas clases mantienen las relaciones de asociación, agregación y multiplicidad ya validadas en la especificación de requisitos: \texttt{Estanque}--\texttt{Siembra} (1 a 0..*), \texttt{Siembra}--\texttt{Grameo} (1 a 0..*), \texttt{Estanque}--\texttt{ParametroAgua} (1 a 0..*) y \texttt{ParametroAgua}--\texttt{AlertaAgua} (0..1 a 0..1).
+
+\subsection{Flujo de datos del subsistema}
+
+El subsistema modelado sostiene dos flujos de datos complementarios dentro del ciclo productivo de AquaGest. El primero, de naturaleza manual, se origina en el Operario de Producción, quien registra la siembra inicial de un estanque (fecha, cantidad de larvas, laboratorio de origen) y, semanalmente, el grameo correspondiente a esa siembra; este flujo alimenta directamente el historial de crecimiento consultado por el Técnico Acuícola. El segundo flujo, de naturaleza automatizada, se origina en los sensores IoT instalados en cada estanque, que envían lecturas periódicas de los parámetros del agua (oxígeno disuelto, pH, temperatura, salinidad, turbidez y alcalinidad) mediante el formato de intercambio JSON sobre MQTT o HTTP REST ya definido en la interfaz de software del sistema; cada lectura recibida se compara contra el rango óptimo configurado para el estanque y, en caso de encontrarse fuera de rango, genera de forma automática una instancia de \texttt{AlertaAgua} vinculada al parámetro correspondiente.
+
+Ambos flujos convergen sobre la misma clase \texttt{Estanque}, lo que confirma la pertinencia de haberla seleccionado como raíz del modelo de origen: es el único punto del dominio en el que la información proveniente del registro manual de campo y la información proveniente de la captura automática por sensores deben conciliarse para ofrecer al usuario una vista coherente del estado del cultivo.
+
+% ==================== 4. MODELO UML DE ORIGEN ====================
+\section{Modelo UML de origen}
+\label{sec:modelo-uml}
+
+\subsection{Diagrama de clases}
+
+El diagrama de clases de origen se construyó en Software Ideas Modeler a partir del modelo conceptual del ERS de AquaGest, incorporando tipado completo de atributos, visibilidad, operaciones con firma definida y los estereotipos necesarios para que el generador de código produzca las construcciones Java esperadas (por ejemplo, \texttt{<<Entity>>} para las clases persistentes y \texttt{<<Service>>} para las clases de lógica de negocio, como el cálculo de capacidad máxima de siembra).
+
+\subsection*{Diagrama de clases }
+
+
+\subsection{Diagramas complementarios}
+
+Se recomienda incorporar como complemento un \textbf{diagrama de casos de uso} restringido al subsistema (Registrar Siembra, Registrar Grameo, Registrar Parámetros del Agua, Gestionar Alerta de Agua) y, si el equipo lo considera necesario para representar el comportamiento de la clase \texttt{AlertaAgua}, un \textbf{diagrama de estados} (activa \(\rightarrow\) atendida). Ambos diagramas ya cuentan con base directa en la Sección 4.1 y 4.2 del ERS de AquaGest (Figura 11 y casos de uso CU-01, CU-02).
+
+\subsection*{diagrama de casos de uso del subsistema}
+
+
+\subsection{Validación de la herramienta}
+
+Antes de ejecutar la generación, el equipo debe revisar manualmente la coherencia sintáctica y semántica del modelo dentro de Software Ideas Modeler, verificando que no existan asociaciones sin multiplicidad definida, atributos sin tipo asignado o estereotipos aplicados de forma inconsistente entre clases relacionadas. El resultado de esta revisión debe documentarse explícitamente antes de continuar con la Fase 4 (configuración del generador).
+
+ 
+\subsection*{revisión de consistencia del diagrama de clases del subsistema en Software Ideas Modeler}
+
+
+\subsection{Correspondencia con el archivo nativo del modelo}
+
+El proyecto nativo de Software Ideas Modeler (\texttt{.simp}) que contiene este modelo debe conservarse como evidencia técnica junto con este documento, referenciado por su nombre de archivo y ubicación dentro del material de la actividad.
+
 
 % ==================== REFERENCIAS ====================
 \newpage
