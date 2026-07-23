@@ -97,7 +97,9 @@
     \textbf{TEMA:}\\[0.3cm]
 
    EXPOSICIÓN SEGUNDO CORTE: HERRAMIENTAS CASE (SOFTWARE IDEAS MODELER)\\[0.5cm]
+   \textbf{Link de GitHub}\\[0.5cm]
 
+\url{https://github.com/equinteroj/IR-4toSoftware-Exposicion-semana12.git}\\[0.5cm]
 
     \textbf{INTEGRANTES:}\\[0.5cm]
     ALCIVAR VELEZ ANDERSON ADONIS\\[0.3cm]
@@ -207,28 +209,212 @@ Ambos flujos convergen sobre la misma clase \texttt{Estanque}, lo que confirma l
 
 El diagrama de clases de origen se construyó en Software Ideas Modeler a partir del modelo conceptual del ERS de AquaGest, incorporando tipado completo de atributos, visibilidad, operaciones con firma definida y los estereotipos necesarios para que el generador de código produzca las construcciones Java esperadas (por ejemplo, \texttt{<<Entity>>} para las clases persistentes y \texttt{<<Service>>} para las clases de lógica de negocio, como el cálculo de capacidad máxima de siembra).
 
-\subsection*{Diagrama de clases }
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Figura/Clases.jpeg}
+    \caption{Diagrama de clases de origen -- Subsistema Control de Siembras y Monitoreo del Agua (AquaGest)}
+    \label{fig:mi_imagen}
+\end{figure}
 
 
 \subsection{Diagramas complementarios}
 
 Se recomienda incorporar como complemento un \textbf{diagrama de casos de uso} restringido al subsistema (Registrar Siembra, Registrar Grameo, Registrar Parámetros del Agua, Gestionar Alerta de Agua) y, si el equipo lo considera necesario para representar el comportamiento de la clase \texttt{AlertaAgua}, un \textbf{diagrama de estados} (activa \(\rightarrow\) atendida). Ambos diagramas ya cuentan con base directa en la Sección 4.1 y 4.2 del ERS de AquaGest (Figura 11 y casos de uso CU-01, CU-02).
 
-\subsection*{diagrama de casos de uso del subsistema}
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Figura/CasoUso.jpeg}
+    \caption{Diagrama de casos de uso del Subsistema de Control de Siembras y Monitoreo del Agua.}
+    \label{fig:mi_imagen}
+\end{figure}
 
 \subsection{Validación de la herramienta}
 
 Antes de ejecutar la generación, el equipo debe revisar manualmente la coherencia sintáctica y semántica del modelo dentro de Software Ideas Modeler, verificando que no existan asociaciones sin multiplicidad definida, atributos sin tipo asignado o estereotipos aplicados de forma inconsistente entre clases relacionadas. El resultado de esta revisión debe documentarse explícitamente antes de continuar con la Fase 4 (configuración del generador).
 
- 
-\subsection*{revisión de consistencia del diagrama de clases del subsistema en Software Ideas Modeler}
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Figura/Consistencia.jpeg}
+    \caption{Revisión de consistencia del diagrama de clases del Subsistema de Control de Siembras y Monitoreo del Agua, evidenciando la ausencia de inconsistencias bloqueantes en el modelo.}
+    \label{fig:mi_imagen}
+\end{figure}
 
 \subsection{Correspondencia con el archivo nativo del modelo}
 
 El proyecto nativo de Software Ideas Modeler (\texttt{.simp}) que contiene este modelo debe conservarse como evidencia técnica junto con este documento, referenciado por su nombre de archivo y ubicación dentro del material de la actividad.
 
+% ==================== 5. CONFIGURACIÓN DEL GENERADOR ====================
+\section{Configuración del mecanismo de generación}
+\label{sec:configuracion-generador}
+
+\subsection{Plantilla y parámetros de generación}
+
+Se utiliza el generador de código Java nativo de Software Ideas Modeler (\emph{Code Generation Templates}), configurado con los siguientes parámetros:
+
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Lenguaje objetivo:} Java (versión a documentar por el equipo según el JDK instalado, recomendado JDK 17 LTS).
+    \item \textbf{Directorio de salida:} carpeta \texttt{generado/} dentro del material del equipo, separada de cualquier código escrito manualmente.
+    \item \textbf{Organización de la salida:} creación de subcarpetas por paquete (opción \emph{Create subdirectories for packages} del asistente de generación), de forma que la estructura de directorios refleje la separación entre dominio y servicio descrita en la Sección \ref{sec:modelo-uml}.
+    \item \textbf{Convención de nombres:} \texttt{PascalCase} para clases, \texttt{camelCase} para atributos y operaciones, conforme a las convenciones estándar de Java.
+    \item \textbf{Política ante regeneración:} dado que Software Ideas Modeler no garantiza de forma automática la preservación de código añadido manualmente fuera de las secciones producidas por la plantilla, el equipo debe mantener claramente separado —mediante comentarios y una convención de nombres de método— el código generado del código completado a mano, y reincorporar manualmente estas adiciones tras cada regeneración (necesario para el roundtrip de la Sección \ref{sec:roundtrip}).
+\end{itemize}
+
+\subsection{Mapeo de estereotipos a construcciones del lenguaje objetivo}
+
+La Tabla \ref{tab:mapeo-estereotipos} documenta las decisiones de mapeo entre los elementos del modelo UML y las construcciones Java que el generador de Software Ideas Modeler debe producir.
+
+\begin{table}[H]
+\centering
+\caption{Mapeo de elementos del modelo a construcciones del lenguaje objetivo (Java).}
+\label{tab:mapeo-estereotipos}
+\begin{tabular}{p{3.2cm}p{3.2cm}p{6.5cm}}
+\toprule
+\textbf{Elemento del modelo} & \textbf{Estereotipo aplicado} & \textbf{Construcción Java generada} \\
+\midrule
+Clase de dominio (p. ej. \texttt{Estanque}) & \texttt{<<Entity>>} & Clase Java con campos privados, getters/setters y anotaciones de persistencia (a completar con el paquete ORM elegido por el equipo, p. ej. JPA). \\
+Clase de lógica de negocio (p. ej. cálculo de capacidad) & \texttt{<<Service>>} & Clase Java de servicio con métodos públicos correspondientes a las operaciones del modelo. \\
+Asociación 1 a 0..* (p. ej. \texttt{Estanque}--\texttt{Siembra}) & multiplicidad UML nativa & Colección tipada (\texttt{List<Siembra>}) en el lado ``muchos'' de la relación. \\
+Atributo tipado (p. ej. \texttt{fecha: Date}) & tipo UML nativo & Campo Java del tipo equivalente (\texttt{java.time.LocalDate}, a definir por el equipo). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Archivos de configuración en el repositorio}
+
+Los archivos o exportaciones de configuración de la plantilla de Software Ideas Modeler empleados en la generación deben conservarse junto al modelo nativo como parte del material técnico de la actividad, de forma que el proceso sea auditable y repetible por el docente.
+
+\subsection{Arquitectura del código resultante}
+
+La configuración del generador descrita en esta sección persigue que el código Java producido por Software Ideas Modeler refleje directamente las decisiones de arquitectura ya fijadas para AquaGest en su especificación de requisitos: una capa de entidades de dominio (clases con estereotipo \texttt{<<Entity>>}) desacoplada de una capa de servicios (clases con estereotipo \texttt{<<Service>>}) que expone las operaciones de negocio del subsistema. Esta separación en capas es la que posteriormente permitirá exponer el subsistema mediante una API REST consumida por el frontend web y por el módulo de inteligencia artificial, ambos externos al núcleo generado por MDD, sin que ninguno de ellos dependa de los detalles internos de persistencia de las entidades.
+
+Adicionalmente, el equipo debe configurar en Software Ideas Modeler el paquete de destino de cada clase generada de forma que refleje esta separación (por ejemplo, un paquete \texttt{dominio} para las entidades y un paquete \texttt{servicio} para la lógica de negocio), de modo que el árbol de directorios del proyecto generado —documentado en la Sección \ref{sec:proceso-generacion}— sea legible y mantenga la trazabilidad visual entre el modelo y el código incluso para un desarrollador que no haya participado en el modelado original.
+
+% ==================== 6. PROCESO DE GENERACIÓN ====================
+\section{Proceso de generación de código}
+\label{sec:proceso-generacion}
+
+La generación se ejecuta desde Software Ideas Modeler mediante la opción de generación de código sobre el paquete que contiene el diagrama de clases validado en la Sección \ref{sec:modelo-uml}. El proceso debe documentarse con las siguientes evidencias:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/GeneracionCodigo.png}
+    \caption{Captura de la invocación del generador de código en Software Ideas Modeler, mostrando las clases seleccionadas y el lenguaje objetivo configurado para la generación del código fuente.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/CodigoGenerado.png}
+    \caption{Código fuente generado automáticamente para las clases del subsistema.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/ArbolPaquetes.png}
+    \caption{Estructura del proyecto generado con las clases del subsistema.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+Se recomienda registrar también el tiempo aproximado que tomó la generación completa del subsistema, como parte de la evidencia del proceso.
+
+% ==================== 7. VERIFICACIÓN DEL CÓDIGO GENERADO ====================
+\section{Verificación del código generado}
+\label{sec:verificacion}
+
+\subsection{Apertura, compilación y ejecución de una unidad demostrable}
+
+El proyecto generado debe abrirse en el IDE Java del equipo (IntelliJ IDEA, Eclipse o VS Code con extensión Java) y compilarse sin errores. Como unidad mínima demostrable se propone instanciar la clase \texttt{Siembra} asociada a un \texttt{Estanque} y ejecutar una operación de persistencia o una prueba unitaria simple sobre el cálculo de capacidad máxima de siembra (RF-02).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/Build.png}
+    \caption{Compilación exitosa del proyecto generado en Visual Studio, sin errores de construcción.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+\subsection{Correspondencia modelo \(\rightarrow\) código}
+
+La Tabla \ref{tab:correspondencia} documenta la trazabilidad entre los elementos del modelo UML y los artefactos de código efectivamente generados. Esta tabla debe completarse con los nombres reales de archivo una vez ejecutada la generación.
+
+\begin{table}[H]
+\centering
+\caption{Correspondencia modelo \(\rightarrow\) código generado (plantilla a completar por el equipo).}
+\label{tab:correspondencia}
+\begin{tabular}{p{2.6cm}p{2.6cm}p{2.6cm}p{4.7cm}}
+\toprule
+\textbf{Clase UML} & \textbf{Atributo/Operación} & \textbf{Archivo generado} & \textbf{Campo/método Java} \\
+\midrule
+\texttt{Estanque} & \texttt{codigo: String} & \emph{a completar} & \emph{a completar} \\
+\texttt{Siembra} & \texttt{registrarSiembra()} & \emph{a completar} & \emph{a completar} \\
+\texttt{ParametroAgua} & \texttt{valor: Decimal} & \emph{a completar} & \emph{a completar} \\
+\texttt{AlertaAgua} & \texttt{estado: String} & \emph{a completar} & \emph{a completar} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Limitaciones observadas del generador}
+
+Se espera que el equipo documente aquí, tras ejecutar la generación real, qué elementos del modelo \emph{no} fueron generados automáticamente y requirieron completarse a mano (por ejemplo: lógica de validación de negocio compleja como la comparación contra rangos óptimos de RF-10, configuración del \texttt{persistence.xml}, o la conexión efectiva a PostgreSQL/MySQL). El código escrito manualmente debe distinguirse claramente del código generado mediante carpetas separadas, comentarios o marcadores de bloque protegido.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/CodigoIncopleto.png}
+    \caption{Código fuente generado automáticamente para la clase \texttt{Estanque} antes de incorporar las relaciones definidas en el diagrama UML.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/CodigoManual.png}
+    \caption{Código fuente de la clase \texttt{Estanque} después de añadir manualmente las relaciones UML no generadas por la herramienta.}
+    \label{fig:mi_imagen}
+\end{figure}
+
+\subsection{Verificación frente a requisitos no funcionales relacionados}
+
+Si bien la actividad se concentra en la verificación funcional del código generado, conviene relacionar el resultado con los requisitos no funcionales del ERS de AquaGest que el subsistema modelado debe respetar una vez integrado al resto del sistema. En particular, el tiempo de registro de un parámetro del agua (RNF-01, tiempo de respuesta no mayor a 2 segundos) y la política de control de acceso basado en roles (RNF-04) condicionan decisiones que exceden lo que el generador de Software Ideas Modeler produce automáticamente: la primera exige que la capa de persistencia generada se acompañe de un mecanismo de conexión eficiente a la base de datos relacional, y la segunda exige incorporar manualmente la lógica de autenticación y autorización sobre los servicios generados. El equipo debe dejar constancia de que estas verificaciones de calidad quedan pendientes de una fase de pruebas no funcionales posterior a esta actividad, y no deben confundirse con la verificación funcional mínima exigida en la Sección \ref{sec:verificacion}.
+
+% ==================== 8. CIERRE DEL CICLO (ROUNDTRIP) ====================
+\section{Cierre del ciclo: roundtrip controlado}
+\label{sec:roundtrip}
+
+Para evidenciar el cierre completo del ciclo MDD, se ejecuta un cambio no trivial sobre el modelo de origen: se propone agregar el atributo \texttt{observaciones: String} a la clase \texttt{Grameo} (permitiendo registrar notas cualitativas del muestreo semanal, tal como se documentó en el hallazgo 3 de la entrevista con el Técnico Acuícola, Apéndice B.3 del ERS) o, alternativamente, modificar la cardinalidad de la relación \texttt{Estanque}--\texttt{AlertaAgua} si el equipo detecta una inconsistencia durante el modelado.
+
+\subsection{Procedimiento}
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item Se captura el estado \emph{antes} del modelo (diagrama de clases) y del código generado para la clase afectada.
+    \item Se aplica el cambio directamente sobre el diagrama de clases en Software Ideas Modeler.
+    \item Se regenera el código para la clase afectada y se reincorpora manualmente, sobre el nuevo código, cualquier adición que se hubiese completado a mano en la Sección \ref{sec:verificacion}, siguiendo la convención de separación documentada en la Sección \ref{sec:configuracion-generador}.
+    \item Se captura el estado \emph{después} del modelo y del código regenerado, verificando que el cambio se refleje correctamente y que la reincorporación del código manual se haya realizado sin pérdida de información.
+\end{enumerate}
+
+\placeholder{captura del diagrama de clases ANTES del cambio (clase Grameo sin el atributo observaciones).}
+
+\placeholder{captura del diagrama de clases DESPUÉS del cambio (clase Grameo con el atributo observaciones agregado).}
+
+\placeholder{captura del código Java de la clase Grameo ANTES de la regeneración.}
+
+\placeholder{captura del código Java de la clase Grameo DESPUÉS de la regeneración, mostrando el nuevo campo (y, si aplica, el bloque protegido con código manual conservado).}
+
+\subsection{Manejo del código completado manualmente}
+
+Software Ideas Modeler no garantiza de forma automática la preservación de código añadido manualmente fuera de lo producido por la plantilla al ejecutar una nueva generación; por ello, la disciplina de separación (comentarios, convención de nombres) definida en la Sección \ref{sec:configuracion-generador} es la que permite al equipo identificar con certeza qué fragmentos deben reincorporarse tras cada regeneración. El equipo debe documentar aquí, con evidencia real, el procedimiento seguido para reincorporar el código manual añadido en la Sección \ref{sec:verificacion} tras ejecutar este roundtrip, y si se detectó alguna pérdida de información en el proceso.
+
+\subsection{Implicaciones del roundtrip para el ciclo de vida de AquaGest}
+
+Más allá de su función demostrativa dentro de esta actividad, el roundtrip documentado en esta sección anticipa un patrón de trabajo que el equipo deberá sostener durante el resto del desarrollo del PFC AquaGest: cada vez que la especificación de requisitos evolucione —por ejemplo, si durante las pruebas con el administrador de la Compañía Biofina surge la necesidad de registrar un nuevo atributo en el historial de grameos, o de ajustar la cardinalidad de la relación entre \texttt{Siembra} y \texttt{Cosecha}— el cambio debería introducirse primero en el modelo de Software Ideas Modeler y propagarse después al código mediante regeneración, en lugar de aplicarse directamente sobre las clases Java ya generadas. Este patrón de trabajo es el que permite que el modelo conserve su condición de fuente autoritativa del sistema a lo largo de todo el proyecto, y no únicamente durante la actividad de generación inicial documentada en este informe. Sostener esta disciplina exige, sin embargo, que el equipo delimite con claridad —mediante la convención de separación descrita en la Sección \ref{sec:configuracion-generador}— qué porciones del código generado pueden completarse manualmente y reincorporarse tras cada regeneración, y cuáles deben permanecer exclusivamente bajo control del modelo.
+
+% ==================== 9. CONCLUSIONES ====================
+\section{Conclusiones}
+\label{sec:conclusiones}
+
+La aplicación del ciclo MDD sobre el subsistema de Control de Siembras y Monitoreo del Agua de AquaGest permitió comprobar, a nivel conceptual y operativo, que el modelo de clases ya validado en el ERS del proyecto constituye una base directamente aprovechable para la generación de código, siempre que se complemente con los estereotipos y perfiles necesarios para que el generador de Software Ideas Modeler produzca las construcciones esperadas del lenguaje objetivo. El enfoque MDD aporta valor real al PFC en tres frentes concretos: (i) reduce el esfuerzo de escritura manual de código repetitivo (entidades, getters/setters, esqueletos de servicio); (ii) refuerza la trazabilidad entre los requisitos funcionales formalizados (RF-01 a RF-10) y el código resultante, mediante la tabla de correspondencia de la Sección \ref{sec:verificacion}; y (iii) evidencia, mediante el roundtrip de la Sección \ref{sec:roundtrip}, que el modelo puede mantenerse como fuente autoritativa incluso después de iniciada la implementación.
+
+Como limitación general del enfoque, se anticipa que la lógica de negocio compleja del dominio acuícola —en particular las reglas de alerta por parámetros fuera de rango (RF-10) y el cálculo de eficiencia alimenticia (RF-14)— excede lo que un generador basado en plantillas puede producir automáticamente, por lo que dicha lógica deberá completarse manualmente y reincorporarse tras cada regeneración del código, siguiendo la convención de separación documentada en la Sección \ref{sec:configuracion-generador}. Asimismo, el alcance de esta actividad se limitó a un subsistema representativo (seis clases del dominio); la extensión del mismo enfoque al resto de los módulos de AquaGest (Alimentación, Historial Sanitario, Inventario, Cosechas) queda como trabajo futuro natural hacia las siguientes fases de implementación del PFC, una vez consolidado el modelo de dominio completo.
+
+Finalmente, la experiencia documentada en este ejercicio deja tres lecciones aprovechables para el resto del desarrollo de AquaGest. Primero, que mantener el diagrama de clases en Software Ideas Modeler como fuente única de verdad del modelo de dominio —en lugar de dejar que diverja del código a medida que este evolucione— exige disciplina de equipo: cada cambio estructural relevante debería originarse en el modelo y propagarse mediante regeneración, no aplicarse directamente y de forma definitiva sobre el código generado sin reincorporarlo tras el siguiente ciclo de generación. Segundo, que la inversión inicial de tiempo en tipar correctamente los atributos, definir con precisión las multiplicidades y aplicar los estereotipos adecuados se traduce directamente en menor esfuerzo de corrección posterior sobre el código generado, lo que confirma en la práctica la relación entre calidad del modelo y calidad del artefacto derivado discutida en el marco teórico de este documento (Sección \ref{sec:marco-teorico}). Tercero, que el enfoque MDD no sustituye la necesidad de pruebas de verificación funcional y no funcional sobre el sistema final, sino que desplaza parte del esfuerzo de desarrollo desde la escritura repetitiva de código hacia el diseño cuidadoso del modelo, lo cual resulta especialmente valioso para un equipo académico con tiempo limitado como el que desarrolla el PFC AquaGest.
 
 % ==================== REFERENCIAS ====================
 \newpage
@@ -237,6 +423,46 @@ El proyecto nativo de Software Ideas Modeler (\texttt{.simp}) que contiene este 
 \addcontentsline{toc}{section}{Referencias}
 
 % ==================== ANEXO ====================
+\newpage
+\appendix
+\section{Anexo: correspondencia con la especificación de requisitos de AquaGest}
 
+La Tabla \ref{tab:anexo-rf} resume la relación entre los requisitos funcionales del ERS de AquaGest cubiertos por el subsistema modelado en este documento y el elemento del modelo UML que los materializa.
+
+\begin{table}[H]
+\centering
+\caption{Requisitos funcionales del ERS de AquaGest cubiertos por el subsistema modelado.}
+\label{tab:anexo-rf}
+\begin{tabular}{p{1.6cm}p{6.5cm}p{4.2cm}}
+\toprule
+\textbf{RF} & \textbf{Descripción (ERS AquaGest)} & \textbf{Elemento del modelo UML} \\
+\midrule
+RF-01 & Registro de estanque & Clase \texttt{Estanque} \\
+RF-02 & Cálculo de capacidad máxima de siembra & Operación en clase \texttt{Estanque} / \texttt{<<Service>>} \\
+RF-04 & Actualización de estado del estanque & Atributo \texttt{estado} en \texttt{Estanque} \\
+RF-05 & Registro de siembra & Clase \texttt{Siembra} \\
+RF-06 & Registro de grameo semanal & Clase \texttt{Grameo} \\
+RF-09 & Registro de parámetros del agua & Clase \texttt{ParametroAgua} \\
+RF-10 & Alerta por parámetro fuera de rango & Clase \texttt{AlertaAgua} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:anexo-rnf} complementa la anterior indicando los requisitos no funcionales del proyecto AquaGest que, si bien no son generados automáticamente por Software Ideas Modeler, condicionan directamente las decisiones de configuración tomadas en la Sección \ref{sec:configuracion-generador} sobre el código derivado del subsistema modelado.
+
+\begin{table}[H]
+\centering
+\caption{Requisitos no funcionales relacionados con el subsistema modelado.}
+\label{tab:anexo-rnf}
+\begin{tabular}{p{1.8cm}p{6.5cm}p{4.0cm}}
+\toprule
+\textbf{RNF} & \textbf{Descripción (ERS AquaGest)} & \textbf{Relación con el código generado} \\
+\midrule
+RNF-01 & Eficiencia de desempeño: registro de un parámetro del agua en no más de 2 segundos bajo carga normal & Exige una capa de persistencia eficiente sobre las entidades \texttt{ParametroAgua} y \texttt{AlertaAgua} generadas \\
+RNF-02 & Disponibilidad del sistema de al menos el 98\,\% del tiempo mensual & Motiva el desacoplamiento de capas (dominio/servicio) reflejado en el paquete generado \\
+RNF-04 & Seguridad: control de acceso basado en roles (RBAC) y cifrado de contraseñas & Debe incorporarse manualmente sobre los servicios generados; no forma parte de la plantilla de generación estructural \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \end{document}
