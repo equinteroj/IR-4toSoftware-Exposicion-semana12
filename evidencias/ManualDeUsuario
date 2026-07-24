@@ -1,0 +1,16 @@
+## Software Ideas Modeler
+
+Software Ideas Modeler es una herramienta CASE utilizada para el modelado y diseño de sistemas de software. Permite crear diversos diagramas UML, BPMN y ERD, facilitando el análisis, diseño y documentación de proyectos.
+
+Para más información sobre sus funcionalidades y herramientas, consulte el [Manual de Usuario de Software Ideas Modeler](https://www.softwareideas.net/en/help/user-manual).
+
+### Características
+
+* Creación de diagramas UML y BPMN.
+* Modelado de requisitos y bases de datos.
+* Generación automática de documentación.
+* Ingeniería inversa a partir del código fuente.
+* Exportación de diagramas en múltiples formatos.
+* Simulación de diagramas de actividades y flujos de trabajo.
+
+Esta herramienta permite mejorar la organización, trazabilidad y documentación durante el desarrollo de software.
