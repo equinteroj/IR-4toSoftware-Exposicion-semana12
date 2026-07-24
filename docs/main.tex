@@ -28,9 +28,9 @@
 \renewcommand{\tablename}{Tabla}
 
 % ==================== COLORES INSTITUCIONALES ====================
-\definecolor{uteqverde}{RGB}{0,90,60}
-\definecolor{uteqverdeclaro}{RGB}{225,240,232}
-\definecolor{grisplaceholder}{RGB}{110,110,110}
+\definecolor{uteqverde}{RGB}{0,0,0}
+\definecolor{uteqverdeclaro}{RGB}{0,0,0}
+\definecolor{grisplaceholder}{RGB}{0,0,0}
 
 \hypersetup{
     colorlinks=true,
@@ -79,7 +79,7 @@
 \newcommand{\docenteNombre}{Ing. Gleiston Guerrero Ulloa, PhD.}
 \newcommand{\periodoAcademico}{2026--2027 PPA}
 \newcommand{\paraleloCurso}{4to ``A'' Software}
-\newcommand{\repoURL}{https://github.com/EdhuXav/Proyecto\_IR\_Camaronera\_CCGaPQ}
+
 
 \begin{document}
 
@@ -97,9 +97,7 @@
     \textbf{TEMA:}\\[0.3cm]
 
    EXPOSICIÓN SEGUNDO CORTE: HERRAMIENTAS CASE (SOFTWARE IDEAS MODELER)\\[0.5cm]
-   \textbf{Link de GitHub}\\[0.5cm]
 
-\url{https://github.com/equinteroj/IR-4toSoftware-Exposicion-semana12.git}\\[0.5cm]
 
     \textbf{INTEGRANTES:}\\[0.5cm]
     ALCIVAR VELEZ ANDERSON ADONIS\\[0.3cm]
@@ -355,7 +353,7 @@ La Tabla \ref{tab:correspondencia} documenta la trazabilidad entre los elementos
 
 \subsection{Limitaciones observadas del generador}
 
-Se espera que el equipo documente aquí, tras ejecutar la generación real, qué elementos del modelo \emph{no} fueron generados automáticamente y requirieron completarse a mano (por ejemplo: lógica de validación de negocio compleja como la comparación contra rangos óptimos de RF-10, configuración del \texttt{persistence.xml}, o la conexión efectiva a PostgreSQL/MySQL). El código escrito manualmente debe distinguirse claramente del código generado mediante carpetas separadas, comentarios o marcadores de bloque protegido.
+Tras ejecutar la generación real del codigo fuente, qué elementos del modelo \emph{no} fueron generados automáticamente y requirieron completarse a mano (por ejemplo: lógica de validación de negocio compleja como la comparación contra rangos óptimos de RF-10, configuración del \texttt{persistence.xml}, o la conexión efectiva a PostgreSQL/MySQL). El código escrito manualmente debe distinguirse claramente del código generado mediante carpetas separadas, comentarios o marcadores de bloque protegido.
 
 \begin{figure}[H]
     \centering
@@ -390,13 +388,33 @@ Para evidenciar el cierre completo del ciclo MDD, se ejecuta un cambio no trivia
     \item Se captura el estado \emph{después} del modelo y del código regenerado, verificando que el cambio se refleje correctamente y que la reincorporación del código manual se haya realizado sin pérdida de información.
 \end{enumerate}
 
-\placeholder{captura del diagrama de clases ANTES del cambio (clase Grameo sin el atributo observaciones).}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figura/GrameoAntes.png}
+\caption{Diagrama de clases de la clase \texttt{Grameo} antes de incorporar el atributo \texttt{Observaciones} en el modelo UML.}
+    \label{fig:mi_imagen}
+\end{figure}
 
-\placeholder{captura del diagrama de clases DESPUÉS del cambio (clase Grameo con el atributo observaciones agregado).}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figura/GrameoDespues.png}
+\caption{Diagrama de clases de la clase \texttt{Grameo} después de incorporar el atributo \texttt{Observaciones} en el modelo UML.}
+    \label{fig:mi_imagen}
+\end{figure}
 
-\placeholder{captura del código Java de la clase Grameo ANTES de la regeneración.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/CodGrameoAntes.png}
+\caption{Código fuente generado para la clase \texttt{Grameo} antes de la regeneración del modelo.}
+    \label{fig:mi_imagen}
+\end{figure}
 
-\placeholder{captura del código Java de la clase Grameo DESPUÉS de la regeneración, mostrando el nuevo campo (y, si aplica, el bloque protegido con código manual conservado).}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figura/CodGrameoDespues.png}
+\caption{Código fuente de la clase \texttt{Grameo} después de la regeneración, incorporando el atributo \texttt{Observaciones} definido en el modelo UML.}
+    \label{fig:mi_imagen}
+\end{figure}
 
 \subsection{Manejo del código completado manualmente}
 
